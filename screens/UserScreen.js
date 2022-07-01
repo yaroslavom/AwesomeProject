@@ -1,11 +1,21 @@
-import {StyleSheet, Text, View} from 'react-native';
+import { StyleSheet } from 'react-native';
 import React from 'react';
+import Wrapper from '../container/Wrapper';
+import Input from '../components/Input';
 
 const UserScreen = () => {
+  const [userFound, setUserFound] = React.useState('');
+
+  const handleChangeInput = text => setUserFound(text);
+
   return (
-    <View>
-      <Text>UserScreen</Text>
-    </View>
+    <Wrapper>
+      <Input
+        placeholder="Users"
+        handleChange={handleChangeInput}
+        value={userFound}
+      />
+    </Wrapper>
   );
 };
 

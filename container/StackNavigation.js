@@ -1,11 +1,11 @@
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import UserScreen from '../screens/UserScreen';
 
-const StackNavigation = () => {
-  const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
 
+const StackNavigation = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Home" component={WelcomeScreen} />
