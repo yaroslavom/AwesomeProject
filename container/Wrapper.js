@@ -10,6 +10,6 @@ export default Wrapper;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 24,
+    margin: 12,
   },
 });
