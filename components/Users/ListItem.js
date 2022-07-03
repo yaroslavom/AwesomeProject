@@ -10,7 +10,7 @@ import {
   Pressable,
 } from 'native-base';
 
-const ListItem = ({ item, onPress }) => {
+const ListItem = ({ item, onPress, children }) => {
   return (
     <Box
       borderBottomWidth="1"
@@ -22,36 +22,47 @@ const ListItem = ({ item, onPress }) => {
       pr="5"
       py="2">
       <Pressable onPress={onPress}>
-        <HStack space={3} justifyContent="space-between">
-          <Avatar
-            size="48px"
-            source={{
-              uri: item.avatar_url,
-            }}
-          />
-          <VStack>
-            <Text
-              _dark={{
-                color: 'warmGray.50',
+        {item ? (
+          <HStack space={3} justifyContent="space-between">
+            <Avatar
+              size="48px"
+              source={{
+                uri: item.avatar_url,
               }}
-              color="coolGray.800"
-              bold>
-              {item.login}
-            </Text>
-            <Link href={item.html_url}>
+            />
+            <VStack>
               <Text
-                color="coolGray.600"
-                underline
                 _dark={{
-                  color: 'warmGray.200',
-                }}>
-                {item.html_url}
-                {item.id}
+                  color: 'warmGray.50',
+                }}
+                color="coolGray.800"
+                bold>
+                {item.login}
               </Text>
-            </Link>
-          </VStack>
-          <Spacer />
-        </HStack>
+              <Link href={item.html_url}>
+                <Text
+                  color="coolGray.600"
+                  underline
+                  _dark={{
+                    color: 'warmGray.200',
+                  }}>
+                  {item.html_url}
+                  {item.id}
+                </Text>
+              </Link>
+            </VStack>
+            <Spacer />
+          </HStack>
+        ) : (
+          <Text
+            _dark={{
+              color: 'warmGray.50',
+            }}
+            color="coolGray.800"
+            bold>
+            {children}
+          </Text>
+        )}
       </Pressable>
     </Box>
   );

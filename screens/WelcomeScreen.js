@@ -5,7 +5,7 @@ import Button from '../components/Button';
 
 const WelcomeScreen = ({ navigation }) => {
   const buttonNavigateHandler = () => {
-    navigation.navigate('Profile');
+    navigation.navigate('Users');
   };
 
   return (
