@@ -13,7 +13,9 @@ const WelcomeScreen = ({ navigation }) => {
       <View style={styles.imageContainer}>
         <Image style={styles.image} source={require('../assets/awesome.png')} />
       </View>
-      <Button onPressHandler={buttonNavigateHandler}>Open Profile</Button>
+      <Button onPressHandler={buttonNavigateHandler}>
+        Show me what you can
+      </Button>
     </Wrapper>
   );
 };

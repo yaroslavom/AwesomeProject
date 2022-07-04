@@ -12,16 +12,8 @@ import {
 
 const ListItem = ({ item, onPress, children }) => {
   return (
-    <Box
-      borderBottomWidth="1"
-      _dark={{
-        borderColor: 'gray.600',
-      }}
-      borderColor="coolGray.200"
-      pl="4"
-      pr="5"
-      py="2">
-      <Pressable onPress={onPress}>
+    <Box borderBottomWidth="1" borderColor="coolGray.200" pl="4" pr="5" py="2">
+      <Pressable onPress={() => onPress(item.login)}>
         {item ? (
           <HStack space={3} justifyContent="space-between">
             <Avatar
@@ -31,21 +23,11 @@ const ListItem = ({ item, onPress, children }) => {
               }}
             />
             <VStack>
-              <Text
-                _dark={{
-                  color: 'warmGray.50',
-                }}
-                color="coolGray.800"
-                bold>
+              <Text color="coolGray.800" bold>
                 {item.login}
               </Text>
               <Link href={item.html_url}>
-                <Text
-                  color="coolGray.600"
-                  underline
-                  _dark={{
-                    color: 'warmGray.200',
-                  }}>
+                <Text color="coolGray.600" underline>
                   {item.html_url}
                   {item.id}
                 </Text>
@@ -54,12 +36,7 @@ const ListItem = ({ item, onPress, children }) => {
             <Spacer />
           </HStack>
         ) : (
-          <Text
-            _dark={{
-              color: 'warmGray.50',
-            }}
-            color="coolGray.800"
-            bold>
+          <Text color="coolGray.800" bold>
             {children}
           </Text>
         )}

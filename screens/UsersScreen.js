@@ -5,23 +5,13 @@ import Wrapper from '../container/Wrapper';
 import Input from '../components/Input';
 import ListItem from '../components/Users/ListItem';
 
-let timeoutId;
+import { debounce } from '../utils/debounce';
 
-const debounce = (func, delay) => {
-  return (...args) => {
-    if (timeoutId) {
-      clearInterval(timeoutId);
-    }
-    timeoutId = setTimeout(() => {
-      func.apply(null, args);
-    }, delay);
-  };
-};
-
-const UsersScreen = () => {
+const UsersScreen = ({ navigation }) => {
   const [allUsers, setAllUsers] = React.useState('');
   const [since, setSince] = React.useState(0);
   const [userSearch, setUserSearch] = React.useState('');
+  const searchDebounce = debounce(searchUserHandler, 500);
 
   React.useEffect(() => {
     if (userSearch.length < 1) {
@@ -36,7 +26,8 @@ const UsersScreen = () => {
     }
   }, [getUsers, since]);
 
-  const listItemHandler = () => console.log("I'm Pressed"); // navigation
+  const listItemHandler = item =>
+    navigation.navigate('Profile', { userLogin: item });
 
   const getUsers = React.useCallback(() => {
     console.log('called getUsers !!!!');
@@ -52,7 +43,7 @@ const UsersScreen = () => {
       .catch(error => console.error(error));
   }, [since]);
 
-  const searchUserHandler = userName => {
+  function searchUserHandler(userName) {
     console.log('called searchUserHandler !!!!', userName);
     fetch(`https://api.github.com/search/users?q=${userName}+in:user`, {
       method: 'GET',
@@ -64,12 +55,12 @@ const UsersScreen = () => {
       .then(response => response.json())
       .then(data => setAllUsers(data?.items))
       .catch(error => console.error(error));
-  };
+  }
 
   const handleChangeInput = text => {
     setUserSearch(text); // async state
     if (text) {
-      debounce(searchUserHandler, 500)(text);
+      searchDebounce(text);
     }
   };
 
