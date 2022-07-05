@@ -32,7 +32,7 @@ const UsersScreen = ({ navigation }) => {
 
   const getUsers = React.useCallback(since => {
     let inception = since;
-    if (Number.isNaN(since)) {
+    if (typeof since !== 'number') {
       inception = 0;
     }
     console.log('called getUsers !!!!!', inception, '-since');
@@ -78,7 +78,7 @@ const UsersScreen = ({ navigation }) => {
       .then(data => setAllUsers(data.items))
       .catch(error => console.error(error))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, []); // should reduce number of api urls, so this commit has flag - testing
 
   const handleChangeInput = text => {
     setUserSearch(text); // async state
@@ -92,7 +92,6 @@ const UsersScreen = ({ navigation }) => {
     [allUsers],
   );
 
-  console.log(!!allUsers.length, !isLoading);
   return (
     <Wrapper>
       <Input
