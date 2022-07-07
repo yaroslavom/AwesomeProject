@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Box, FlatList } from 'native-base';
 
 import Wrapper from '../container/Wrapper';
@@ -6,6 +6,7 @@ import Input from '../components/Input';
 import ListItem from '../components/Users/ListItem';
 
 import { debounce } from '../utils/debounce';
+import Spinner from '../components/Spinner';
 
 const UsersScreen = ({ navigation }) => {
   const [allUsers, setAllUsers] = React.useState('');
@@ -27,22 +28,18 @@ const UsersScreen = ({ navigation }) => {
     }
   }, [getUsers, since, isLoading]);
 
-  const listItemHandler = item =>
-    navigation.navigate('Profile', { userLogin: item });
+  const listItemHandler = useCallback(
+    item => navigation.navigate('Profile', { userLogin: item }),
+    [navigation],
+  );
 
-  const getUsers = React.useCallback(since => {
+  const getUsers = useCallback(since => {
     let inception = since;
     if (typeof since !== 'number') {
       inception = 0;
     }
     console.log('called getUsers !!!!!', inception, '-since');
-    fetch(`https://api.github.com/users?since=${inception}&per_page=30`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-type': 'application/json',
-      },
-    })
+    fetch(`https://api.github.com/users?since=${inception}&per_page=30`)
       .then(response => response.json())
       .then(data => setAllUsers(prevData => [...prevData, ...data]))
       .catch(error => console.error(error))
@@ -51,29 +48,17 @@ const UsersScreen = ({ navigation }) => {
 
   function searchUserHandler(userName) {
     console.log('called searchUserHandler !!!!', userName);
-    fetch(`https://api.github.com/search/users?q=${userName}+in:user`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-type': 'application/json',
-      },
-    })
+    fetch(`https://api.github.com/search/users?q=${userName}+in:user`)
       .then(response => response.json())
       .then(data => setAllUsers(data?.items))
       .catch(error => console.error(error));
   }
 
-  const refreshUsers = React.useCallback(() => {
+  const refreshUsers = useCallback(() => {
     console.log('called refreshUsers !!!!');
     setIsLoading(true);
     setUserSearch('');
-    fetch('https://api.github.com/search/users?q=in:user&per_page=30', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-type': 'application/json',
-      },
-    })
+    fetch('https://api.github.com/search/users?q=in:user&per_page=30')
       .then(response => response.json())
       .then(data => setAllUsers(data.items))
       .catch(error => console.error(error))
@@ -92,6 +77,12 @@ const UsersScreen = ({ navigation }) => {
     [allUsers],
   );
 
+  const renderItem = ({ item }) => (
+    <ListItem item={item} onPress={listItemHandler} />
+  );
+
+  const EmptyListComponent = () => <ListItem>No user found :(</ListItem>;
+
   return (
     <Wrapper>
       <Input
@@ -100,21 +91,16 @@ const UsersScreen = ({ navigation }) => {
         value={userSearch}
       />
       <Box py="2" flex={1}>
-        {allUsers.length > 0 && (
-          <FlatList
-            data={allUsers}
-            renderItem={({ item }) => (
-              <ListItem item={item} onPress={listItemHandler} />
-            )}
-            onEndReached={() => !userSearch && setSince(lastItem)}
-            keyExtractor={item => item.id}
-            refreshing={isLoading}
-            onRefresh={refreshUsers}
-          />
-        )}
-        {!allUsers.length && !isLoading && (
-          <ListItem>No user found :(</ListItem>
-        )}
+        {isLoading && allUsers.length === 0 && <Spinner>Loading</Spinner>}
+        <FlatList
+          data={allUsers}
+          renderItem={renderItem}
+          onEndReached={() => !userSearch && setSince(lastItem)}
+          ListEmptyComponent={!isLoading && EmptyListComponent}
+          keyExtractor={item => item.id}
+          refreshing={isLoading}
+          onRefresh={refreshUsers}
+        />
       </Box>
     </Wrapper>
   );
